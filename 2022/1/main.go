@@ -30,11 +30,22 @@ func main() {
 			i++
 		}
 	}
-	e := 0
+	one := 0
+	two := 0
+	three := 0
 	for j, c := range elves {
-		if j==0 || e < c {
-			e = c
+		if j==0 || one < c {
+			three = two
+			two = one
+			one = c
+		} else if two < c {
+			three = two
+			two = c
+		} else if three < c {
+			three = c
 		}
 	}
-	fmt.Printf("%v\n", e)
+	total := one + two + three
+	fmt.Printf("%v %v %v\n", one, two, three)
+	fmt.Printf("%v\n", total)
 }
