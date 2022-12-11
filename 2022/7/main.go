@@ -134,9 +134,58 @@ func ls(c_dir, root *dir_p, line string) {
 	}
 }
 
-func sumFirstPart(root *dir_p) int {
-	fmt.Println(root)
-	return 0
+func sumFirstPart(d *dir_p, path string, du map[string]int) map[string]int {
+	if path == "" {
+		path = "/"
+	} else {
+		path = path + d.name + "/"
+	}
+	if du == nil {
+		du = make(map[string]int)
+	}
+
+	for _, dir := range d.dirs {
+		sumFirstPart(dir, path, du)
+	}
+
+	for _, dir := range d.dirs {
+		dir_path := path + dir.name + "/"
+		du[path] += du[dir_path]
+	}
+
+	for _, file := range d.files {
+		du[path] += file.size
+	}
+
+	return du
+}
+
+func decideFirstPart(du map[string]int) int {
+	var total int
+	for _, v := range du {
+		if v < 100000 {
+			total += v
+		}
+	}
+	return total
+}
+
+func getNeededSpace(needed, root, total int) int {
+	current_free := total - root
+	return needed - current_free
+}
+
+func decideSecondPart(du map[string]int, space_needed int) int {
+	var rightsized int
+
+	for _, v := range du {
+		if v > space_needed && rightsized == 0 {
+			rightsized = v
+		} else if v > space_needed && v < rightsized {
+			rightsized = v
+		}
+	}
+	return rightsized
 }
 
 func main() {
@@ -151,4 +200,10 @@ func main() {
 	f.Close()
 	printFilesystem(root, 0)
 	//fmt.Printf("root dirs: %v\n", root.dirs)
+
+	du := sumFirstPart(root, "", nil)
+	fmt.Printf("First part: %d\n", decideFirstPart(du))
+
+	needed := getNeededSpace(30000000, du["/"], 70000000)
+	fmt.Printf("Second part: %d\n", decideSecondPart(du, needed))
 }
