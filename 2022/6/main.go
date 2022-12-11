@@ -7,12 +7,13 @@ import (
 	"os"
 )
 
-func findSignal(scan *bufio.Scanner) (int, error) {
-	scan.Scan()
-	in := scan.Text()
-
-	for i:=4; i<len(in); i++ {
-		if len(map[byte]byte{in[i]: in[i], in[i-1]:in[i-1], in[i-2]:in[i-2], in[i-3]:in[i-3]}) == 4 {
+func findSignal(input string, count int) (int, error) {
+	for i:=count; i<len(input); i++ {
+		m := make(map[byte]byte)
+		for j:=0; j<count; j++ {
+			m[input[i-j]] = input[i-j]
+		}
+		if len(m) == count {
 			return i+1, nil
 		}
 	}
@@ -26,10 +27,20 @@ func main() {
 		os.Exit(1)
 	}
 	scan := bufio.NewScanner(bufio.NewReader(f))
-	marker, err := findSignal(scan)
+	scan.Scan()
+	input := scan.Text()
+	p_marker, m_marker := 4, 14
+	packet_marker, err := findSignal(input, p_marker)
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("First: %v\n", marker)
+	fmt.Printf("First: %v\n", packet_marker)
+
+	message_marker, err := findSignal(input, m_marker)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("Second: %v\n", message_marker)
 }
