@@ -72,4 +72,5 @@ func main() {
 	fmt.Printf("Output two: %v\n", rucksackTwo(scan_two))
 
 	f.Close()
+	f2.Close()
 }
