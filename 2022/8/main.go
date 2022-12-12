@@ -87,7 +87,6 @@ func checkViewingDistance(direction, x, y int, treeMap [][]*tree, d chan<- int) 
 	case up:
 		for i:=x; i>0; i-= 1 {
 			if treeMap[i][y].height >= treeMap[x][y].height && !(i == x){
-				fmt.Printf("Up Heights a: %d b: %d\n", treeMap[i][y].height, treeMap[x][y].height)
 				break
 			}
 			distance++
@@ -95,7 +94,6 @@ func checkViewingDistance(direction, x, y int, treeMap [][]*tree, d chan<- int) 
 	case down:
 		for i:=x; i<len(treeMap)-1; i+=1 {
 			if treeMap[i][y].height >= treeMap[x][y].height && !(i == x){
-				fmt.Printf("Down Heights a: %d b: %d\n", treeMap[i][y].height, treeMap[x][y].height)
 				break
 			}
 			distance++
@@ -104,7 +102,6 @@ func checkViewingDistance(direction, x, y int, treeMap [][]*tree, d chan<- int) 
 	case left:
 		for i:=y; i>0; i-=1 {
 			if treeMap[x][i].height >= treeMap[x][y].height && !(i == y){
-				fmt.Printf("Left Heights a: %d b: %d\n", treeMap[x][i].height, treeMap[x][y].height)
 				break
 			}
 			distance++
@@ -113,7 +110,6 @@ func checkViewingDistance(direction, x, y int, treeMap [][]*tree, d chan<- int) 
 	case right:
 		for i:=y; i<len(treeMap[x])-1; i+=1 {
 			if treeMap[x][i].height >= treeMap[x][y].height && !(i == y){
-				fmt.Printf("Right Heights a: %d b: %d\n", treeMap[x][i].height, treeMap[x][y].height)
 				break
 			}
 			distance++
@@ -176,12 +172,11 @@ func getMaxTreeVisDistance(treeMap [][]*tree) int {
 				distance := <-d
 				count++
 				distanceScore = distanceScore * distance
-				fmt.Printf("%d %d\n", distanceScore, distance)
 				if count == 4 {
 					close(d)
-					fmt.Printf ("i: %d  j: %d  tree: %d\n", i, j, treeMap[i][j].height)
+					//fmt.Printf ("i: %d  j: %d  tree: %d\n", i, j, treeMap[i][j].height)
 					if maxDistance == 0 || distanceScore > maxDistance {
-						fmt.Printf("maxD: %d  newMax: %d\n", maxDistance, distanceScore)
+						//fmt.Printf("maxD: %d  newMax: %d\n", maxDistance, distanceScore)
 						maxDistance = distanceScore
 					}
 					break
