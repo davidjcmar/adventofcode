@@ -73,6 +73,19 @@ func (t *tail) position_count() int {
 	return len(t.record)
 }
 
+func (t *tail) move(direction string) {
+	switch direction {
+	case "U":
+		t.pos.y += 1
+	case "D":
+		t.pos.y -= 1
+	case "L":
+		t.pos.x -= 1
+	case "R":
+		t.pos.x += 1
+	}
+}
+
 func newTail() *tail {
 	t := tail{}
 	t.record = make(map[position]int)
@@ -121,13 +134,36 @@ func chase(scan *bufio.Scanner) int {
 		count, _ := strconv.Atoi(scan.Text())
 		//fmt.Printf("dir: %v -- count: %v\n", direction, count)
 
-		for i := 0; i < count; i++ {
+		for i:=0; i < count; i++ {
 			h.move(direction)
 			t.follow(h.pos)
 		}
 	}
 	//t.print()
 	return t.position_count()
+}
+
+func broken(scan *bufio.Scanner, n int) int {
+	var t []*tail
+
+	for i:=0; i<n; i++ {
+		t = append(t, newTail())
+	}
+
+	for scan.Scan() {
+		direction := scan.Text()
+		scan.Scan()
+		count, _ := strconv.Atoi(scan.Text())
+
+		//fmt.Printf("direction: %s -- count: %d\n", direction, count)
+		for i:=0; i<count; i++ {
+			t[0].move(direction)
+			for j:=1; j<n; j++ {
+				t[j].follow(t[j-1].pos)
+			}
+		}
+	}
+	return t[n-1].position_count()
 }
 
 func main() {
@@ -140,5 +176,17 @@ func main() {
 	scan.Split(bufio.ScanWords)
 
 	first := chase(scan)
+	f.Close()
 	fmt.Printf("First: %d\n", first)
+
+	f, err = os.Open(os.Args[1])
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		os.Exit(1)
+	}
+	scan = bufio.NewScanner(bufio.NewReader(f))
+	scan.Split(bufio.ScanWords)
+	second := broken(scan, 10)
+	f.Close()
+	fmt.Printf("Second: %d\n", second)
 }
