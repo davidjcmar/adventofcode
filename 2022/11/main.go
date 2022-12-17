@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	monkeyIt= iota 
+	monkeyIt = iota
 	itemsIt
 	operationIt
 	testIt
@@ -42,7 +42,7 @@ func regexByLineType(lt string) *regexp.Regexp {
 	return regex
 }
 
-func parseLine (line string) (int, []int) {
+func parseLine(line string) (int, []int) {
 	var rType int
 	var rList []int
 
@@ -110,13 +110,13 @@ func parseLine (line string) (int, []int) {
 	return rType, rList
 }
 
-func newOperation (operation []int, tdp int) func (int) int {
+func newOperation(operation []int, tdp int) func(int) int {
 	operand2 := operation[2]
 	op := operation[1]
 
 	if op == addition {
 		if operand2 != 0 {
-			return func (w int) int {
+			return func(w int) int {
 				if tdp != 0 {
 					return (w + operand2) % tdp
 				} else {
@@ -124,7 +124,7 @@ func newOperation (operation []int, tdp int) func (int) int {
 				}
 			}
 		} else {
-			return func (w int) int {
+			return func(w int) int {
 				if tdp != 0 {
 					return (w * w) % tdp
 				} else {
@@ -134,7 +134,7 @@ func newOperation (operation []int, tdp int) func (int) int {
 		}
 	} else if op == multiplication {
 		if operand2 != 0 {
-			return func (w int) int {
+			return func(w int) int {
 				if tdp != 0 {
 					return (w * operand2) % tdp
 				} else {
@@ -142,7 +142,7 @@ func newOperation (operation []int, tdp int) func (int) int {
 				}
 			}
 		} else {
-			return func (w int) int {
+			return func(w int) int {
 				if tdp != 0 {
 					return (w * w) % tdp
 				} else {
@@ -152,21 +152,21 @@ func newOperation (operation []int, tdp int) func (int) int {
 		}
 	} else if op == subtraction {
 		if operand2 != 0 {
-			return func (w int) int {
+			return func(w int) int {
 				return w - operand2
 			}
 		} else {
-			return func (w int) int {
+			return func(w int) int {
 				return 0
 			}
 		}
 	} else if op == division {
 		if operand2 != 0 {
-			return func (w int) int {
+			return func(w int) int {
 				return w / operand2
 			}
 		} else {
-			return func (w int) int {
+			return func(w int) int {
 				return 1
 			}
 		}
@@ -174,7 +174,7 @@ func newOperation (operation []int, tdp int) func (int) int {
 	return nil
 }
 
-func newMonkeyBusiness (operation []int, test, cond1, cond0, tdp int) monkeyBusiness {
+func newMonkeyBusiness(operation []int, test, cond1, cond0, tdp int) monkeyBusiness {
 	var target int
 
 	op := newOperation(operation, tdp)
@@ -187,7 +187,7 @@ func newMonkeyBusiness (operation []int, test, cond1, cond0, tdp int) monkeyBusi
 
 		}
 		//fmt.Printf("%d\n", worry)
-		if worry % test == 0 {
+		if worry%test == 0 {
 			target = cond1
 		} else {
 			target = cond0
@@ -206,8 +206,8 @@ func newMonkey(mId, test, cond1, cond0 int, operation, items []int, tdp int) *mo
 
 type monkey struct {
 	id, inspectCount, testDivisor int
-	items []int
-	mb monkeyBusiness
+	items                         []int
+	mb                            monkeyBusiness
 }
 
 func checkMonkeyDone(m map[string]bool) bool {
@@ -218,7 +218,7 @@ func checkMonkeyDone(m map[string]bool) bool {
 		return false
 	} else if _, ok = m["operation"]; !ok {
 		return false
-	} else 	if _, ok = m["test"]; !ok {
+	} else if _, ok = m["test"]; !ok {
 		return false
 	} else if _, ok = m["cond1"]; !ok {
 		return false
@@ -233,11 +233,11 @@ func generateMonkeys(scan *bufio.Scanner, tdp int) []*monkey {
 	var mId, test, cond1, cond0 int
 	var items, op []int
 
-	for scan.Scan () {
+	for scan.Scan() {
 		if scan.Text() == "" {
 			continue
 		}
-		monkeyDone := false 
+		monkeyDone := false
 		monkeyDoneMap := make(map[string]bool)
 		for !monkeyDone {
 			//fmt.Printf("Line: %v\n", scan.Text())
@@ -285,9 +285,9 @@ func getTestDivisorsProduct(monkeys []*monkey) int {
 	return divisorProduct
 }
 
-func keepAway(monkeys []*monkey, iterations, worryMod int) []*monkey{
+func keepAway(monkeys []*monkey, iterations, worryMod int) []*monkey {
 	//fmt.Println("Enter keepaway")
-	for i:=0; i<iterations; i++ {
+	for i := 0; i < iterations; i++ {
 		for _, monkey := range monkeys {
 			//fmt.Printf("Monkey %v Items %v\n", monkey, monkey.items)
 			for _, item := range monkey.items {
@@ -325,9 +325,9 @@ func main() {
 	//fmt.Printf("Monkeys:\n%v\n", m)
 	m = keepAway(m, 20, 3)
 	/*
-	for _, monkey := range m {
-		fmt.Printf("Monkey %d inspected %d items\n", monkey.id, monkey.inspectCount)
-	}
+		for _, monkey := range m {
+			fmt.Printf("Monkey %d inspected %d items\n", monkey.id, monkey.inspectCount)
+		}
 	*/
 	fmt.Printf("First: %d\n", findMostActive(m))
 
@@ -339,10 +339,12 @@ func main() {
 	scan = bufio.NewScanner(bufio.NewReader(f))
 	m = generateMonkeys(scan, tdp)
 	f.Close()
-	
+
 	m = keepAway(m, 10000, 0)
-	for _, monkey := range m {
-		fmt.Printf("Monkey %d inspected %d items\n", monkey.id, monkey.inspectCount)
-	}
+	/*
+		for _, monkey := range m {
+			fmt.Printf("Monkey %d inspected %d items\n", monkey.id, monkey.inspectCount)
+		}
+	*/
 	fmt.Printf("Second: %d\n", findMostActive(m))
 }
